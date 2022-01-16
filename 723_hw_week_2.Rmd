@@ -1,0 +1,354 @@
+---
+title: "Week 2 HW"
+author: "Izzy Bouklas"
+date: "1/10/2022"
+output: html_document
+---
+
+**Chapter 3: Describing Variables**
+
+**1) What is a variable?**
+
+*Answer: The book defines a variable as “a bunch of observations of the same measurement." In other words, it can be defined as the thing that measures across your unit of measurement.* 
+
+**2.	For each of the following variables, what types of variables are they (continuous, count, ordinal, categorical, qualitative)?**
+a.	Age
+b.	Gender
+c.	The number of times that the President has tweeted in the past day
+d.	Income 
+e.	Number of Instagram posts about statistics in the past month
+f.	The number of unemployment claims filed in US last week
+g.	The university or college that a student attends
+h.	A therapist’s written assessment of a patient’s symptoms of depression
+i.	Whether a soccer team is in its league’s A division (highest), B division (next highest), or C division (lowest) 
+
+*a. continuous* 
+*b. categorical*
+*c: count*
+*d: continuous* 
+*e: count*
+*f: count*
+*g: categorical* 
+*h: qualitative *
+*i: ordinal *
+
+
+**3.	Which of the following provides a description of the probability that each possible value of a variable will occur?**
+a.	Variation
+b.	Distribution
+c.	Range	
+d.	Mean
+
+*Answer: b) Distribution*
+
+**4.	Below is a frequency table depicting the salaries of Economics professors employed at a university. The column named Salary contains the salary, and the column named Frequency contains the number of professors who earn the stated salary. **  
+
+*a.	Calculate the average salary earned by professors in the Economics department.*
+*b.	Calculate the median.*
+*c.	Calculate the minimum and maximum.*
+*d.	Calculate the interquartile range.*
+
+*a) The average salary is $103,529.40*
+
+```{r}
+(85000*5)+(90000*4)+(100000*1)+(120000*2)+
+  (125000*3)+(130000*2)
+```
+```{r}
+1760000/(5+4+1+2+3+2)
+```
+
+*b) The median is $95,000 because there are 17 observations, meaning the median is the average of the 8th value and 9th value.*
+```{r}
+(5+4+1+2+3+2)/2
+```
+
+*c) The minimum is $85,000 (0% of the values are below it) and the maximum is $130,000 (because 100% of the values are below it)*
+
+*d) The interquartile range is $38,750, meaning 50% of the salaries nearest to the median have a range of $38,750. Please see below for the process leading to this answer.*
+
+*There are 17 observations, and we want to know which is 25th percentile and which is the 75th percentile. It looks like in both cases, we are between two observations.* 
+```{r}
+17*.25
+17*.75
+```
+
+*For the 25th percentile, we are between the 4th and 5th observation, which are both $85,000. For the 75th percentile, we are between the 12th and 13th. Let's take the difference of these two observations and find out what 3/4 is:*
+```{r}
+((125000-120000)/4)*3
+```
+
+
+*Now let's add the 3/4 of the difference to the 12th observation:*
+```{r}
+120000+3750
+```
+
+*Now let's find the interquartile range:*
+```{r}
+123750-85000
+```
+
+
+**5.	Which of the following commonly represents the truth we are trying to estimate in statistics?**
+a.	English/Latin letters like x and y
+b.	Modifications of English letters like  x and y
+c.	Greek letters like μ and β
+d.	Modifications of Greek letters like β ̂
+
+*Answer: c: Greek letters like μ and β represent the truth we are trying to estimate in stats. Modifications of these letters represent out estimate of the truth.*
+	
+**6.	Which of the following reduces impact of extreme values if the distribution of a variable is skewed?**
+a.	 Log transforming the variable
+b.	 Mean centering the variable
+c.	 Standardizing the variable
+d.	 Ignoring the variable
+
+*Answer: a) log transforming the variable*
+
+**7.  Order the following distributions from the one with lowest to the one with highest variability:**
+
+*answer: (least variability) d, a, c, b (Most variability)*
+
+**8.    The following graph represents the final exam scores for 1000 students who took an Introduction to Statistics course at a university.**
+
+a.	Describe the distribution. 
+b.	Is there skewness to the data? 
+c.	Would the mean or the median be a better measure to describe the center of the distribution?
+d.	What measure would you use to describe the variability in the distribution?
+
+*a) While the density plot already describes the distribution, let's unpack what the density plot tells us. The area under the 78-80 scores on the distribution seems to be the largest, meaning a given student has the highest probability of scoring between 78 and 80 points on this exam among all the 2-point intervals. The slight right skew indicates few scores above 87 or so. The range appears to be somewhere around 72 - 89.*
+
+*b) The data has a slight right skew*
+
+*c) The median would be a better measure to describe the central of the distribution because of this skew and because there seem to be more scores below 80. If we used the mean, we could risk getting a result above 80, and that would be misleading.*
+
+*d) It would make the most sense to use standard deviation because it is easier to interpret than variance*
+
+
+**9.	Which of the following statement is correct regarding a left-skewed distribution?**
+a.	The mean is greater than the median
+b.	The mean is less than the median
+c.	The mean and median are equal
+
+*answer: b) The mean is less than the median.*
+
+*This is because the unusually low values in the left tail are bring the mean down*
+
+**10.	The table below shows data on how many students in a university are Freshman, Sophomore, Junior and Senior.**
+
+a.	For an individual student, what kind of variable is their student standing (continuous, count, ordinal, categorical, qualitative)? 
+b.	For the university itself, what kind of variable is the number of students with a given student standing (continuous, count, ordinal, categorical, qualitative)? (Yes, the answer is different from part a!)
+c.	What kind of graph would best visualize this distribution for the university? Create the graph either by hand or with software.
+
+
+*Answer: a) Student standing is ordinal because senior is higher than junior but there is not necessarily a known or equal interval between them*
+
+*b) This is a count variable because we are counting how many students are in each class standing, and there cannot be a negative or fractional value*
+
+*c) A bar graph would be appropriate to show the distribution of students across class standings at the university level. See below for the visualization process*
+
+First let's load package needed for data visualization:
+```{r}
+library(ggplot2)
+```
+
+Now let's throw our data into a data frame called "students":
+```{r}
+standing <- c("freshman", "sophomore", "junior", "senior")
+frequency <- c(1000, 1200, 900, 1500)
+students <- data.frame(x=standing, counts=frequency)
+
+students
+```
+
+And plot what we have in a bar graph:
+
+```{r}
+students_plot <- ggplot(students) + geom_bar(aes(x=standing, y=frequency), stat="identity")
+print(students_plot)
+```
+
+**11.	Collect any continuous data from your classmates, family members, and/or friends. For example, you can collect data about their age or height. **
+
+a.	What is the distribution of the data? Describe the shape of the distribution. Summarize the data using measures like mean, median, range, standard deviation. 
+b.	What theoretical distribution may have generated the data that you sampled?
+c.	Does your data give you a good idea about what the underlying theoretical distribution might be? Explain your reasoning.
+
+
+*answer: a)  According to the density plot below, the shape of the distribution is certainly non-linear, and the slope changes direction at various points. This is because many of my siblings and their spouses are in their 30's, while my nieces and nephew are young children and my parents are older adults. [To follow the process of getting to the density plot, please see below]. The mean age is 30.88 years, the median is 32 years, the minimum is 1/4 of a year, the max is 76 years, and the range is 75.75 years.*
+
+```{r}
+library(ggplot2)
+
+fam_member <- c("Naomi", "George", "James", "Tejas", "David", "Quitterie", "Michael", "Kevin", "Izzy", "Tom", "Nora", "Juliet", "Lana", "Roberto")
+
+age <- c(63, 76, 37, 35, 35, 38, 31, 33, 24, 27, 8, 5, 20, .25 )
+
+family <- data.frame(x = fam_member, y = age)
+
+family
+
+
+ggplot(data = family, aes(x = age))+ 
+  geom_density()
+
+summary(family)
+```
+
+
+Here are some of my initial attempts to plot. First I wanted to see if a scatter plot made sense, but it was just showing everyone's names, not the frequency of ages. 
+```{r}
+ggplot(data = family, aes(x = fam_member, y = age)) + 
+  geom_point()
+```
+
+For fun, I switched the x and y axes. Still not what we want. 
+```{r}
+ggplot(data = family, aes(x = age, y = fam_member)) + 
+  geom_point()
+```
+
+
+A histogram! Perfect for just such a time as this. Except there are not that many data points so it's hard get a good sense of the shape by looking at it. 
+```{r}
+ggplot(data = family, aes(x = age))+ 
+  geom_histogram(binwidth = 1)
+```
+
+Finally, a density plot shows us what we're looking for. 
+```{r}
+ggplot(data = family, aes(x = age))+ 
+  geom_density()
+```
+
+*b) The theoretical distribution of the ages of a broader population (maybe everyone related to me or the US population or the global population) may have generated the data that I sampled (the ages of my immediate family members).*
+
+*c) My data does not give me a good idea about what the underlying theoretical distribution might be because there were only 14 observations. Additionally, factors like income and access to healthcare influence the range of ages a person might have in their lifetime, so sampling from one(ish) household is not representative in the slightest.*
+
+
+
+**Chapter 4: Describing Relationships**
+
+**1.	What is a conditional distribution?**
+
+*Answer: according to the book, a conditional distribution is the distribution of one variable given the values of another variable.*
+
+**2.	The following figure (using fictional data) describes the relationship between Income level and rating on a scale testing for signs of Depression.**
+
+a.	How does the conditional mean of Depression change as Income increases?
+b.	Does the graph indicate that lower income causes depression? Why or why not?
+
+*answer: a) the two variables have an inverse relationship such that, as income increases, the conditional mean decreases.*
+
+*b) The graph does not indicate that lower income causes depression because the scatter plot cannot indicate causality- this is a trap that the author warns us of in chapter 4. However, if income was a known cause of depression and the two variables had an inverse correlation, the scatter plot might look similar to this one.*
+
+**3.	The below fictional table depicts data collected from 3000 university students on their classification  (Freshman, Sophomore, Junior, Senior) and whether or not they receive financial aid. The table shows a cross tabulation of classification and receipt of financial aid.**
+
+a.	Calculate the probability of receiving financial aid given that a student is a Senior.
+b.	Calculate the probability that a student is a Senior given that they receive financial aid.
+c.	Calculate the probability of receiving financial aid given that a student is a Freshman.
+
+*a) If the student is a senior, the probability of receiving financial aid is .46*
+
+```{r}
+288/(288+338)
+```
+
+
+*b) If the student receives financial aid, the probability that they are a senior is .18*
+```{r}
+288/(508+349+425+288)
+```
+
+*c) If the student is a freshman, the probability of receiving financial aid is .58*
+```{r}
+508/(508+371)
+```
+
+**4.	Describe two advantages and one disadvantage of using line-fitting methods as opposed to calculating local means.**
+
+*answer: An advantage to line-fitting instead of calculating local means is that line-fitting provides the conditional mean of Y for any value of x, not just the values we have data for. Another advantage is that it allows the researcher to describe the relationship between x and y in a concise way. A disadvantage is that it can be difficult to pick what kind of shape is best for the variables and the relationship, and if we choose poorly, our estimate of the conditional mean will be wrong. *
+
+**5.	Consider the line of best fit: Y = 4 - 3.5X.**
+
+a.	What is the conditional predicted mean of Y when X=6?
+b.	What is the conditional predicted mean of Y when X=-2?
+
+
+*answer: a) the conditional predicted mean of y is -17*
+
+```{r}
+x <- c(6, -2)
+
+Y = 4 - (3.5*x)
+
+Y
+```
+
+*b) the conditional predicted mean of y is 11*
+
+
+**6.	Which of the following terms describes a measurement of how much two variables vary with each other?**
+a.	Variance
+b.	Conditional mean
+c.	Covariance
+d.	Local mean
+
+*answer: c) covariance*
+
+**7.	What is the difference between covariance and correlation?**
+
+*answer: Covariance is a measure of the extent to which two variables move together (or away from one another). Covariance is important for calculating OLS, and correlation is a re-scaling of the OLS result. The correlation does not clearly show the slope in terms of X and Y, but instead shows us how strong the relationship is as a whole. *
+
+**8.	Figure A and Figure B below depict the (fictional-data) relationship between scores on a math exam and an intelligence measure from data collected from a fictional sample of 100 students. **
+
+a.	What type of shape is fitted in Figure A?
+b.	What kind of shape is fitted in Figure B?
+c.	Which shape is a better fit for the data, and how can you tell? 
+d.	For Figure A, describe the residuals for different ranges of math exam scores. Are the observed data below or above the line/curve? Are the residuals evenly scattered around the line/curve?
+
+*answer: a) Figure A shows a straight line*
+
+*b) figure B shows a parabola (or at least part of one)*
+
+*c) figure B's parabola is a better fit for the data because the curve goes through more data points.*
+
+*d) Some of the observed data in figure A are below the line and some above the line. The residuals are not evenly scattered around the line. The residuals in the -2 to -1 score range are generally above the line, followed by residuals below the line in the -1 to 1 range, and finally the residuals are above the line again in the 1 to 3 range.*
+
+**9.	The below table contains fictional data on 5 employees from a company, reporting on how well they get along with their coworkers (GetAlong) and their level of job satisfaction (Satisfaction). The Prediction variable is the predicted satisfaction level, or the conditional mean of satisfaction, for each value of GetAlong derived after fitting a line of best fit using ordinary least squares estimation.**
+
+a.	Fill in the “residual” column.
+b.	Describe how ordinary least squares uses residuals when fitting a line.
+
+*a) Below are the residuals for each case:*
+```{r}
+4.72-5.07
+4.28-4.05
+5.38-5.33
+4.22-4.02
+3.45-3.59
+```
+
+*b) OLS uses residuals when fitting a line by squaring them and adding up all the predictions across every data point. Then it assigns values for β0 and β1 that will yield the smallest possible sum of squared residuals.*
+
+**10.	We’ll be thinking here about the process of controlling for a variable. Consider the example: What is the relationship between first generation status and graduation rate in a population of college students?**
+a.	Give an example of at a variable that might explain why first generation status and graduation rate are correlated other than one causing the other.
+b.	Describe in five steps how you would subtract out the part of the first-generation/graduation-rate relationship that is explained by the variable you listed in part a.
+c.	How would you interpret the first-generation/graduation-rate relationship you get after performing the steps in part b?
+
+*answer: a) A variable that can affect the correlation of these two variables is median household income*
+
+x = first gen status ;y = graduation rate; z = income
+
+*b) 1) Get the mean of graduation rate conditional on median household income*
+
+*2) Subtract out that conditional mean to get the residual of graduation rate (the part of graduation rate that is NOT explained by income)*
+
+*3) Calculate the mean of first generation status conditional on income*
+
+*4) Subtract out that conditional mean to get the residual of first gen status (the part of first gen status that is NOT explained by income)*
+
+*5) Describe the relationship between the residual of graduation rate and the residual of first generation status*
+
+*c) If the two residuals are not at all correlated, then we would know that graduation status can be entirely explained by first gen status*
