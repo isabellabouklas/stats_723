@@ -1,0 +1,106 @@
+---
+title: "Week 3 Homework"
+author: "Izzy Bouklas"
+date: "1/19/2022"
+output: html_document
+---
+
+**Homework for Chapter 5: Identification**
+
+
+**Question 1:** _Think about the last time you sat down in a chair (perhaps right now). When you did that, you probably predicted you would observe that you would end up sitting in the chair, rather than passing through it or the chair breaking. List three assumptions you made about the data generating process when you made that prediction._
+
+Assumption 1: well-built chairs remain intact unless an extreme amount of force is exerted onto them (AKA Chairs are meant to hold up a range of weights that I fit into)
+
+Assumption 2: my chair is well-built 
+
+Assumption 3: The forces of gravity will keep the sitter in the chair until another force is acted upon the sitter (either from within (deciding to get up) or something external causing them to fall out of the chair)
+
+
+**Question 2:**	_Which of the following is the best definition of the term identified as in “this variation has identified the effect we’re interested in”?_
+_a.	We’ve generated the data by conducting a controlled experiment in which treatment is randomly assigned._
+_b.	In the data generating process, the only reason why we see variation in the outcome variable is because of the treatment variable._
+_c.	The relationship we are looking at in the data actually tests a hypothesis_
+_d.	In the variation we use, there’s no reason we’d see any relationship at all except for the effect we’re interested in. _
+ 
+The answer is D because the point of finding the relevant variation is so that you can eliminate extraneous explanations for the relationship that you observe. I was tempted to say "C" because of the following paragraph located in the "identification" section of the chapter:
+
+"A research question takes us from theory to hypothesis, making sure that the hypothesis we’re testing will actually tell us something about the theory. Identification takes us from hypothesis to the data, making sure that we have a way of testing that hypothesis in the data, and not accidentally testing some other hypothesis instead." 
+
+However, the given question implies that the hypothesis has already been tested and confirmed, and we can be sure that the relationship we are observing is due to the specific variation in the day that we have determined. 
+ 
+ 
+**Question 3:**	_Go to your favorite news source and find an article that describes the results of a new empirical study. Describe what you think are some features of the data generating process. What are some ways to explain their result other than the interpretation they had? Did the study (as described in the article) have ways of blocking out the alternate explanation you thought of?_ 
+
+[This article](https://www.theguardian.com/world/2022/jan/13/face-masks-make-people-look-more-attractive-study-finds) summarizes a study with the headline "Face masks make people look more attractive, study finds." In this study, 43 women were asked to rate the attractiveness of images of men's faces in four conditions: not wearing a mask, wearing a plain cloth mask, wearing a blue medical mask, and holding a book in front of the area that a face mask would be covering. Photos with men wearing a blue surgical mask were rated most attractive, followed by a cloth mask. 
+
+Some features of the data generating process may include "rules" like...
+
+- there are many reasons why someone might choose to wear a face mask, including trying to avoid becoming ill, trying to avoid spreading an illness, to make a statement about what they believe in, to fit in, to hide some aspect of their face, to hide that they failed to brush their teeth that day, etc.
+
+- face mask usage has become more popular in the pandemic 
+
+- face mask usage differs among people based on things like region, local laws, and political beliefs
+
+- some people wearing face masks are trying to signal to others something about their political beliefs
+
+
+The article included a couple possible explanations. One was that masks made people more attractive because they helped direct the respondent's attention to the masked person's eyes. Another was that masks make people more attractive because the brain fills in missing parts of the person's face so the viewer can perceive the person as looking a way that they don't look, and that might be more attractive to them. A pandemic-related explanation was that medical masks reminded the respondents of health care workers, who are generally perceived as heroes and comforting in the time of the pandemic, so they might have associated the medical masks with these positive feelings toward healthcare workers. 
+
+Another possible explanation not mentioned in the article could be that they had a sample of women who were likely to be politically liberal (based on the location they were in near the university) and who associated face masks with liberal policies, which made them rate the mask wearers as more attractive (whether they made the connection between the mask and the perceived political affiliation consciously or unconsciously). Additionally, medical masks are widely available and many brands produce masks that look the same, so if these respondents were accustomed to seeing this kind as the dominant face mask, they might rate it more favorably than cloth masks because it is familiar and associated with the feeling of safety in a public setting. The news article does not say that the study made any attempts to block out this alternate explanation. 
+
+**Question 4:**	_You read about a new study with the headline “eating caviar linked to longer lifespan.” The study’s research question is “does eating caviar make you live longer?” In the study’s data, they find that people who eat caviar have, on average, longer lifespans than people who don’t. _
+_a.	What are some alternate explanations for this relationship? _
+_b.	What sort of variation would identify the answer to the research question? _
+_c.	Give one suggestion for how the study authors might isolate variation that would identify the answer to the research question_
+
+a) Another explanation for this relationship could be that SES the cause of both variables such that people with higher SES are more likely to eat caviar (because they can afford it) and are also more likely to live longer due to things like increased access to preventative medical care, increased ability to take off work when sick, etc. Another explanation could be that caviar is eaten more in certain countries (depending on location) and these countries also happen to have policies that promote the health of their residents, like universal healthcare. 
+
+b) Variation in lifespans depending on SES might identify the answer to the research question. In other words, we want to specifically look at the variation in SES.
+
+c) "Controlling" for income or wealth might isolate the variation. If they only looked at people within a certain income bracket (or looked at multiple but only compared individuals with others from their income bracket) then this would be a way of identifying the answer to the research question. 
+
+**Question 5:**	_For each of the following news headlines, assume that the underlying data actually only shows a correlation between the two variables mentioned. Give an alternate explanation for the correlation other than the causal relationship implied by the headline. _
+_a.	“As stock market drops, presidential approval ratings decline.”_
+_b.	“Dates are announced for the downtown summer concert series, driving up sales at downtown restaurants.” _
+_c.	“Unsanitary? Hospital visits linked to 20% increased risk of disease.” _
+_d.	“Dress for success! Every CEO follows this office-wear rule.”_
+
+a) A pandemic causes the stock market to drop, also causes presidential approval rating to decline because there is a lot of variability what U.S. residents think is an appropriate pandemic response. 
+
+b) When the weather is warmer, people are more likely to spend time downtown and eat at downtown restaurants. The concert series happens to take place in the summer when the weather is warmer. 
+
+c) People going to the hospital in the first place are more likely to be experiencing health issues that could either be symptoms of disease or lead to disease. 
+
+d) There are cultural expectations about what CEO's should wear, so once people step into the role of CEO, they dress to meet those expectations. 
+
+**Question 6:**	_Why is a variable that causes both the “treatment” and “outcome” variables especially concerning for identification? You may want to use the phrase “alternate explanation” in your answer._
+
+A variable that causes both the treatment and the outcome variables is especially concerning for identification because it offers an alternate explanation for the relationship, taking us further away from identifying the effect we're interested in. When a third variable completely explains the relationship between two variables, the original bivariate relationship is considered spurious.
+
+**Question 7.**	_Shoe company Crikey claims that people who wear their fancy and expensive professional running-shoe Cool Mistrunner brand run 4 to 5% faster than if they wore an average shoe. _
+_a.	In a few sentences, describe the data-generating process (you will probably leave some things out, that’s okay). _
+_b.	What are possible alternative explanations for this claim, aside from the shoe making the person run faster?_
+_c.	In running their study, the researchers accounted for some alternative explanations, including: gender, enthusiasm for running, and whether runners have participated in marathons and/or half marathons. Think of an alternative explanation not on this list. What is the implication of not accounting for this alternative explanation?_
+
+a) This data generating process may include things like the following "rules" (please note that these are written in general terms that reflect my lack of specific knowledge on the topic):
+- genetics are partly responsible for physical ability including someone's baseline running speed
+- people can generally change their running speeds by training 
+- after a certain age, running speed tends to decline
+- different runners require different kinds of running shoes to reach their peak performance
+- shoes that have specific qualities (I'm not sure what these are, I am not a runner) can aid in one's running performance to an extent 
+- environment factors can affect running speed (like if it's really windy or humid)
+- physical factors (like having a cold or a broken ankle) can greatly affect running speed
+
+b) Serious runners who train a lot and are more likely to be fast are also more likely to invest in more expensive running shoes. Also, since these are "professional running-shoes" like the question states, maybe these people buying them are more likely to be professional runners and the statistic mentioned is actually comparing a group of professional runners to the general running population. 
+
+c) Another alternate explanation could be wealth- maybe people who are able to invest in these expensive running shoes also have the means to invest in services like personal training to improve their running performance. By not accounting for wealth as an alternative explanation, they could be misidentifying the answer to their research question.
+
+**Question 8.**	_Which of the following terms describe how a variable changes from observation to observation?_
+_a.	Data-generating process _
+_b.	Variation _
+_c.	Raw data _
+_d.	Determinants_
+
+Answer: b) Variation. This is at the heart of what we have been talking about! When we can isolate the variation that is actually relevant to the phenomenon we are studying, we become more certain that the data we observe are due to the specific variation we isolated, thus identifying the answer to our research question. 
+
