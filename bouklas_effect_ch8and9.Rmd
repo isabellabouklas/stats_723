@@ -1,0 +1,278 @@
+---
+title: 'The Effect Homework: Chapters 8 & 9'
+author: "Izzy Bouklas"
+date: "2/2/2022"
+output: html_document
+---
+
+**Chapter 8: Causal Paths**
+
+**Question 1:**	*Assuming that a path has no colliders on it, what is the difference between a path being Open and Closed?*
+
+According to the chapter, "A path is Open if all of the variables along that paths are allowed to vary. It is instead Closed if at least one of the variables along that path has no variation." In other words, one could close an open path by removing the variation caused by a particular variable in the path. We can remove the variation caused by a specific variable by selecting a sample that does not have variation in the given variable, or finding another way to statistically "control" for that variable.
+
+In the case of a collider existing on a path, it is closed by default, and one can re-open the path by controlling for the collider. 
+
+**Question 2.**	*Consider the below generic causal diagram.*
+*a.	List every path from X to Y.*
+*b.	Which of the paths are front-door paths?*
+*c.	Which of the paths are open back-door paths?*
+*d.	What variables must be controlled for in order to identify the effect of X on Y? (only list what must be controlled for, not anything that additionally could be controlled for).*
+
+
+a) Path #1) X --> A --> Y
+Path #2) X <-- B --> Y
+Path #3) X <-- B <-- D --> Y
+Path #4) X --> C <-- D -->  Y
+Path #5) X --> C <-- D -->  B --> Y
+
+b) There is only one front-door path because there is only one path in which all of the arrows are pointing away from the treatment variable: Path #1) X --> A --> Y
+
+c) Drawing from part a, here are the *open* backdoor paths:
+
+Path #2) X <-- B --> Y
+Path #3) X <-- B <-- D --> Y
+
+Paths 4 and 5 are CLOSED back door paths because they each involve the variable 'C' which is a collider. If we want to open these paths, we have to control for C. 
+
+d) In order to identify the effect of X on Y, we would need to control for B and D. We can achieve this by just controling for B, since D only affecys X through B. We would also need to control for E so that we know the effects of A we are observing are due to X. 
+
+
+**Question 3.**	*Consider the research question: Does having higher income cause better health? *
+*a.	Draw a causal diagram depicting the data generating process for this relationship with 5-10 variables on it. *
+*b.	Identify the Front Door paths. *
+*c.	Identify the Back Door paths. *
+*d.	Identify the paths that represent direct effects. *
+*e.	Identify the Good Paths and the Bad Paths. *
+
+
+a) DAG:
+
+```{r}
+#load packages
+library("dagitty")
+library("ggdag")
+library("ggplot2")
+```
+
+
+```{r}
+dag3  <- dagify(
+  Income ~ ParentalSES,
+  Education ~ ParentalSES,
+  Health ~ Education,
+  Health ~ Income,
+  Health ~ AccessHealthcare,
+  Health ~ EnvironmentalFactors,
+  Health ~ ParentalSES,
+  EnvironmentalFactors ~ Income,
+  AccessHealthcare ~ Income)
+
+ggdag(dag3)
+```
+
+b) Front door paths:
+
+path #1) income --> health
+path #2) income --> environmental factors -->  health
+path #3) income -->  access to healthcare -->  health
+
+c) Back door paths:
+
+path #4) income <-- parental SES --> health
+path #5) income <-- parental SES -->  education --> health 
+
+d) the path that represents the direct effect of income on health is path #1) income --> health. All of the other paths include mediating variables. If we are zooming into those paths, we could say that income has a direct effect on access to health care, and access to health care has a direct effect on health (and we could do this for environmental factors as well), but overall there is only one path with a direct effect between our treatment and outcome variables.
+
+e) If we want to know the effect of income on health, we might look to follow the principle "front door paths are generally good paths and back door paths are generally bad paths, meaning they are less relevant to our research question). The good paths would be:
+
+path #1) income --> health
+path #2) income --> environmental factors -->  health
+path #3) income -->  access to healthcare -->  health
+
+While parental income and education could be important pieces of the puzzle, presumably a good portion of the effects of these variables will be captured by looking at income anyway.
+
+
+**Question 4.**	*Which of the following describes a causal path where all the arrows point away from the treatment? *
+*a.	Open Path *
+*b.	Closed Path *
+*c.	Front Door Path *
+*d.	Back Door Path*
+
+Answer: c. Front door path. These paths can be thought of as having all of the motion starting with the treatment variable and moving in the direction of the outcome variable. 
+
+**Question 5.**	*Consider the figure below, which depicts the relationship between teaching quality, number of publications (e.g., articles, books), and popularity among scholars and students in a population of professors.*
+
+*a.	What type of variable is Popularity in one path on this diagram? *
+*b.	Discuss what would happen if you controlled for Popularity.*
+
+a) Popularity is collider in this situation because the arrows on either side of it are each pointing toward it. This means that teaching quality and number of publications are only related in that they both affect popularity, but they do not affect one another. 
+
+b) If we controlled for popularity, or held it constant, we would open the path between teaching quality and number of publications, and they would suddenly be related and able to affect one another. 
+
+**Question 6.**	*Consider the figure below, which depicts the relationship between a pandemic-related lockdown and an economic recession. The research question of interest is: Does a pandemic-related lockdown cause recession? *
+
+*a.	Write down all the paths in the diagram from Lockdown to Recession. To make our lives simpler (there are a lot of paths in this diagram), ignore any path that goes through Stimulus. *
+*b.	List all of the paths that are Front Door Paths. *
+*c.	What would happen if we controlled for unemployment? *
+*d.	Is it possible to measure each of the variables adequately?*
+*e.	Can you think of any variables and paths not depicted in the diagram that may be relevant to identify the answer to the research question? List at least one and no more than three.*
+
+a) Path #1) Lockdown --> Recession
+path #2) lockdown --> unemployment --> recession
+path #3) lockdown <-- prior economy --> unemployment --> recession
+path #4) lockdown <-- prior economy --> recession 
+
+b) The front door paths are: 
+Path #1) Lockdown --> Recession
+path #2) lockdown --> unemployment --> recession
+
+c) If we controlled for unemployment, we would be left with only one open front door path (Path #1: Lockdown --> Recession) and one open backdoor path (path #4: lockdown <-- prior economy --> recession ). So really we'd be focusing on the open front door path that would be left, looking at the direct effect of lockdown on recession. 
+
+d) It might be possible to measure these each of these variables effectively. "Lockdown" could measure the length of the lockdown in a given state/country, the unemployment rate is easy to measure (at least in the U.S.), prior economy and recession could both be measured by GDP, and stimulus could be measured by the overall amount of stimulus funds given to individuals, or even a binary variable denoting whether there was a stimulus initiative or not. Measuringt he lockdown variable could get hairy, especially in the U.S. where lockdowns were mostly imposed at the county/state level. This would be an issue because we would probably only be able to measure prior economy and recession at the national level, so there might be an inconsistency in the units of analysis. 
+
+e) Another potentially relevant variable could be covid case rates and disability due to covid, which would both be influenced by lockdown and influence unemployment.
+
+
+**Question 7.**	*Consider the question: Does obtaining a higher education improve income? Think of a couple of examples of Bad Paths in a causal diagram depicting the data generating process for this research question.*
+
+Some other variables that may be at play here could be parental SES, age, high school performance, and type of employment. Please see the DAG below:
+
+```{r}
+dag7  <- dagify(
+  Income ~ ParentalSES,
+  Income ~ Age,
+  Income ~ EmploymentType,
+  Income ~ HigherEd,
+  HigherEd ~ ParentalSES,
+  HigherEd ~ Age,
+  HigherEd ~ HSPerformance,
+  HSPerformance ~ ParentalSES,
+  EmploymentType ~ HigherEd
+  )
+
+ggdag(dag7)
+```
+
+Some bad paths bad here would be our backdoor paths:
+
+1) Higher ed <-- age --> income
+2) higher ed <-- parental SES --> income
+3) [not a path between our treatment and outcome variables, but any path including high school performance would be a bad path]
+
+**Chapter 9: Finding Front Doors**
+
+**Question 1.**	*Which of the following describes when randomization of treatment occurs without a researcher controlling the randomization? *
+*a.	Exogenous variation *
+*b.	Natural experiment *
+*c.	Instrumental variable* 
+*d.	Randomized experiment*
+
+Answer: b. Natural experiment. Natural experiments create a form of variation in the treatment that has no back doors. This randomization is not assigned in a research environment, but rather happens to take place in the real world.  
+
+
+**Question 2.**	*Necessary conditions:*
+*a.	What needs to be true about the variation we need to isolate when we’re trying to isolate front door paths?*
+*b.	How do we know that the variation we get from a randomized controlled experiment fulfills the condition(s) from part a?*
+
+a) The variation we need to isolate needs to be able to be partitioned such that at least some of the variation has no back doors (or has back doors that we can close through something like a natural experiment).
+
+
+b)  We know there are no backdoors in a randomized controlled experiment because there are no systematic differences between treatment groups. Since participant characteristics cannot affect their treatment, we know that any measured changes are due to the treatment. 
+
+
+**Question 3.**	*Describe the four major differences between randomized experiments and natural experiments discussed in the chapter. As a bonus, there’s a fifth difference described in the chapter having to do with sample size and representativeness.*
+
+1) Sometimes natural experiments don't complete eliminate back doors like researcher-led randomization.
+
+2) Natural observations are more 'natural' and the observations you get may be more realistic. We don't have to worry about maximizing experimental realism like we would in a lab because natural experiments take place in real life.
+
+3) In natural experiments, we see the effect only among people who are sensitive to the natural randomness (because we are tossing our the variation that occurs for reasons other than natural randomness). It is possible to miss an effect of a treatment if it only applies for a certain group of people that were not picked up by the natural randomness.
+
+4) It is sometimes more difficult to convince people of the exogeneity of natural experiments, while people tend to just believe in the exogeneity of pure randomization. 
+
+
+**Question 4.**	*Provide an example of a of research question that is causal in nature but cannot be feasibly answered by a randomized experiment. Explain your reasoning.*
+
+An example could be a research question in which the treatment variable cannot be randomly assigned, like race or gender or SES. We could ask the question "does gender cause salary" but wouldn't be able to address it with a randomization experiment. The one interesting work around in this situation would be employer audit studies in which researchers manipulate the gender of fictitious job applicants. 
+
+**Question 5.**	*Define the concept of exogenous variation.*
+
+A source of exogenous variation is a source of variation in treatment that has no open back doors. Ideally, the source of exogenous variation would not be caused by any of the variables that exist within the causal diagram. "Exogenous," as Steve put it in lecture, means "outside of the system." 
+
+**Question 6.**	*Provide an example of a natural experiment. It could be an idea of your own, from the book, or from a study you read. *
+*a.	Draw a causal diagram using 5-10 variables. *
+*b.	List the paths from the source of exogenous variation to the outcome. *
+*c.	Which paths need to be closed?*
+*d.	Is it believable in this context that you haven’t missed any paths and that you can close all the paths you need? Why or why not?*
+
+Natural experiment: does winning a the lottery affect one's self-esteem?
+
+a) Here we are looking at the effect of winning the lottery (specifically becoming a multi-millionaire from the lottery) on self-esteem. The variables used are becoming a multi-millionaire from the lottery, being able to afford and get things like cosmetic surgery, attention/interest from others, employment, and self esteem. 
+
+```{r}
+dag6  <- dagify(
+  MultiMillionaire~ Lottery,
+  SelfEsteem ~ MultiMillionaire,
+  SelfEsteem ~ InterestofOthers,
+  InterestofOthers ~ MultiMillionaire,
+  SelfEsteem ~  ExpensiveCosmeticChanges,
+  ExpensiveCosmeticChanges ~ MultiMillionaire,
+  SelfEsteem ~ Employment,
+  Employment ~ MultiMillionaire)
+
+ggdag(dag6)
+```
+
+
+b) path #1) Lottery --> multi millionaire --> self esteem
+path #2) lottery -->  multi millionaire -->  cosmetic changes --> self esteem
+path #3) lottery -->  multi millionaire --> attention/interest from other people --> self esteem
+path #4) lottery -->  multi millionaire --> employment --> self esteem
+
+c) In this case, all of the paths are front door paths, and none need to be closed. It was actually really difficult to come up with any variables that would create a backdoor path in this diagram. 
+
+d) No, I would say this is not a comprehensive picture of the path from becoming rich from the lottery to self-esteem, but it was what fit in this DAG. There is probably a lot of paranoia involved- I could see becoming rich from the lottery as a phenomenon that involves way more distress than one would think going into it. Outside pressures about how to spend the winnings might affect self-esteem, as well as close relationships changing.
+
+
+**Question 7.**	*Which of the following best explains how “using exogenous variation to predict treatment, and then using the prediction instead of the treatment itself” lets you isolate just the front door from treatment to outcome?*
+
+*a.	Because it allows you to control for treatment assignment*
+*b.	Because the exogenous variation has no back doors, so nothing it predicts can have back doors either*
+*c.	Because it takes the relationship between treatment and outcome and, by controlling for the exogenous variation, removes the back doors*
+*d.	It can’t unless the treatment itself is also exogenously assigned*
+
+Answer: d.	It can’t unless the treatment itself is also exogenously assigned. This is what we have been discussing throughout the chapter- the only way to pretty much eliminate back doors is to have randomization at the level of treatment assignment either through controlled research or a natural experiment. 
+
+**Question 8.**	*Consider the following natural experiment design: in 2019, United States president Donald Trump increased tariffs on Chinese imports considerably. This made United States consumers want to switch to non-Chinese sources of imports. If you are an exporter to the US, like Brazil, then demand for your products just went up if China is a competitor of yours. So Brazilian manufacturers of machinery saw their exports increase by a lot, but Brazilian pop musicians didn’t. You want to know whether exporting to a country makes you like it more. You plan to isolate the variation in Brazilian exports driven by the tariffs to see if industries with more exports have a higher opinion of the United States.*
+*a.	What potential back doors might remain between the tariffs and the opinion of the United States?*
+*b.	If someone told you that they performed this study as described, and found that increased exports had no effect on opinion of the US, would you believe the result? Why or why not? *
+
+a) Here is a potential DAG:
+
+```{r}
+dag8  <- dagify(
+  IndustryExports ~ Demand,
+  Demand ~ ChinaTariff,
+  Demand ~ TypeofProduct,
+  PoliDisagreement ~ ChinaTariff,
+  AttitudeTowardUS ~ PoliDisagreement,
+  AttitudeTowardUS ~ TypeofProduct,
+  AttitudeTowardUS ~ IndustryExports,
+  AttitudeTowardUS ~ MaintainRelationship,
+  MaintainRelationship ~ IndustryExports)
+
+ggdag(dag8)
+```
+
+
+Here I included variables like the tariff, the demand of industry-specific products, the kind of industry, the amount of exports, whether the industry tends to support the tariff (political disagreement), the desire to maintain an economic relationship with the US and attitude toward the US. 
+
+One back door might be that industries that tend to have more homogeneity in political ideology might automatically support or disagree with the US's decision to impose the tariff in the first place, and that might be a factor in an industry's attitude toward the US. 
+
+b)  It's not immediately obvious how exports would affect the true opinion of the country to which an industry is exporting. Yes, higher exports maybe incentivizes maintaining a good economic relationship but I don't see why it would make an industry on the whole 'like' the US. I'm not even sure I'm convinced about an industry on the whole having a unified attitude. 
+
+However, I'm not sure I would be comfortable accepting the finding as a result of the study as described. Since there is, in my mind, such a big leap between the treatment and the outcome variables, there are probably way more variables that someone with a better knowledge of global economy could point out. I knew I shouldn't have dropped out of Model UN after a month. 
+
+
+

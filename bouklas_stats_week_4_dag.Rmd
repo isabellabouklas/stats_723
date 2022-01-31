@@ -1,0 +1,377 @@
+---
+title: "homework week 4"
+author: "Izzy Bouklas"
+date: "1/26/2022"
+output: html_document
+---
+**Chapter 6 Homework: Causal Diagrams**
+
+**Question 1.**	*In a conversation with your friend, you mention a study you read that found that being tall causally makes you more likely to earn above $100,000 per year. Your friend says the study must be wrong, since they know several tall people who make much less than that, and several short people who do earn that much. Does your friend’s reasoning make sense or not, and why?*
+
+Our friend is off base here. In the context of statistics, we use the language of causality even when Y didn't necessarily occur. What we mean when we say 'x causes y' is 'changes in x cause changes in the probability of y occurring'. The author offers the example of the light switch in the first section of the chapter. We can confidently say that flipping the light switch generally causes the light to turn on, even if there are instances in which is it burnt out and doesn't turn on. In reality, flipping the light switch greatly increases the probability that the light will turn on. However, as the author points out in footnote #6, our friend would be more on track if they were refering to the legal conception of causality. 
+
+**Question 2.**	 *Consider the below diagram, which reproduces Figure 6.3. In this diagram... *
+*a.	Which variables have a direct effect on Money?*
+*b.	Which variables have an indirect effect on Money? *
+
+a) CoinFlip and TerryInRoom each have a direct effect on Money
+
+b) Terry'sMood has an indirect effect on Money because it has a direct effect on TerryInRoom, which has a direct effect on Money.
+
+**Question 3.** *You are interested in the question “Does reading Harry Potter as a child make you read more as an adult?” and draw the diagram below. *
+*a.	What direct effects should be included when trying to answer your research question of interest?*
+*b.	What indirect effects should be included when trying to answer your research question of interest?*
+*c.	What is a likely alternative explanation of why we might see a relationship between reading Harry Potter and reading more as an adult?*
+
+a) Since the research question is specifically inquiring about the relationship between reading Harry Potter as a kid and reading frequency as an adult, we need to examine any direct effects between our x and y. 
+
+b) I think the diagram is accurate in that we should be looking at the indirect effects of the age someone is when Harry Potter is released on their reading as an adult (with the mediating variable being if they read HP as a kid). If we include the indirect effect that reading HP as a kid may have on reading as an adult through the mediating variable "read other books by JK Rowling" (like in the diagram), it would also make sense to include another mediating variable like "read other young adult fantasy books" that also operates along the same causal pathway. 
+
+c) A possible alternate explanation is could be that someone's love of reading caused both x and y. That is, they liked reading so they read HP as a kid, AND they still like reading so they read as an adult. This unobserved variable is noted in the diagram as a possible explanation for the relationship. Another possible explanation is that someone's parents or older siblings really encouraged reading (maybe they have a librarian in their family?) and that caused them both to read HP as a kid and to read as an adult.
+
+
+**Question 4.**	*The figure in Question 3 has LikesReading included as an unobserved variable. In a few sentences each, explain: *
+*a.	Why do we bother to include variables on our diagrams if we can’t observe them? *
+*b.	Why might we think that LikesReading is an unobserved or latent variable?*
+
+a) We need to include all non-trivial variables in our diagram that are relevant to the DGP. Even though LikesReading is unobserved, it is still a potentially important component of the data generating process. If we found a way to operationalize and measure it effectively, it could become an observed variable. Unobserved variables also serve the purpose of signifying in a diagram that we are aware of some latent variable that is at least partially responsible for the bivariate relationship. 
+
+b) LikesReading seems like a plausible latent variable because it could explain the bivariate relationship. An affinity for reading could be the cause of both reading HP as a kid AND reading as an adult, but it was not explicitly observed. 
+
+
+**Question 5.**	*Consider the research question “do government fire-safety advertisements reduce forest fires?”. *
+*a.	Draw a causal diagram with these features: (a) ForestFires is caused by FireSafetyAds and ParkRangers (who can help catch fires early and put them out). (b) Both FireSafetyAds and ParkRangers are caused by GovtBudget (the government has to pay for this stuff!). (c) GovtBudget is caused by TimeSinceLastFire— a recent fire might get more money sent to the parks department. *
+*b.	Suggest one omitted arrow or variable that should be on the diagram.*
+
+a) To draw the DAG, first let's install and load the relevant packages:
+
+```{r}
+install.packages("plyr" , repos = "https://cran.us.r-project.org")
+install.packages("dagitty", repos = "https://cran.us.r-project.org")
+install.packages("ggdag", repos = "https://cran.us.r-project.org")
+```
+
+
+```{r}
+library("dagitty")
+library("ggdag")
+library("ggplot2")
+```
+
+And input the causal relationships: 
+```{r}
+dag5  <- dagify(
+  ForestFires ~ FireSafetyAids + ParkRangers,
+  ParkRangers ~ GovtBudget,
+  FireSafetyAids ~ GovtBudget,
+  GovtBudget ~ TimeSinceLastFire)
+
+ggdag(dag5)
+```
+
+b) An omitted variable that should be on the diagram should be related to the climate and potentially climate change. Forest fires are more likely to occur in arid climates. Perhaps we could include the variable "climate" with a direct arrow to ForestFires. 
+
+**Question 6.** *Think of a research question in your field/major. *
+*a.	Sketch out the possible data generating process. *
+*b.	What is the cause of interest? The outcome? *
+*c.	What other variables are in play? *
+*d.	Draw a causal diagram depicting the relationships between all of the variables? *
+*e.	Can there be any unobserved or latent variables? Include them in the diagram.*
+
+
+a) The question is, "does parental political ideology cause adult vaccine compliance?" The possible data generating process could include things like:
+
+- parental political ideology can influence one's political ideology
+- children learn health behaviors from their parents
+- vaccine compliance is often dictated by political ideology
+- if someone is not vaccinated as a kid (as per their parents' doing), they might see vaccine non-compliance as normal and opt to continue to abstain from vaccines into adulthood
+- some people have trouble complying with vaccine rules because of lack of access to healthcare 
+
+b) The cause of interest in this case is parental political ideology and the outcome variable is adult vaccine compliance. 
+
+c) Other variables at play are individual health history, access to healthcare, religious beliefs, political beliefs, education, misinformation intake, trust in authority, parental politics, parental education, and SES. 
+
+d) DAG:
+
+```{r}
+dag6  <- dagify(
+  Vaccine ~ HealthcareAccess,
+  Vaccine ~ ReligiousBeliefs,
+  Vaccine ~ Education,
+  Education ~ SES,
+  Education ~ ParentalEduc,
+  HealthcareAccess ~ SES,
+  Vaccine ~ HealthHistory,
+  Vaccine ~ Misinformation,
+  Vaccine ~ TrustAuthority,
+  TrustAuthority ~ ParentPolitics,
+  ParentPolitics ~ ParentalEduc, 
+  ReligiousBeliefs ~ ParentReligion,
+  ParentReligion ~ ParentPolitics,
+  ParentPolitics ~ Politics,
+  Vaccine ~ Politics,
+  Politics ~ Misinformation)
+
+ggdag(dag6)
+```
+
+e) Latent variables would include aspects of upbringing that are difficult to measure. It is easier to measure parents' behaviors/attitudes and see how they compare to their adult children's behaviors/attitudes, but it is harder to measure how a relational dynamic affects children's behaviors/attitudes. Here is an attempt to incorporate these dynamics and experiences, labeled "Childhood":
+
+```{r}
+dag6e  <- dagify(
+  Vaccine ~ HealthcareAccess,
+  Vaccine ~ ReligiousBeliefs,
+  Vaccine ~ Education,
+  Education ~ SES,
+  Education ~ ParentalEduc,
+  HealthcareAccess ~ SES,
+  Vaccine ~ HealthHistory,
+  Vaccine ~ Misinformation,
+  Vaccine ~ TrustAuthority,
+  TrustAuthority ~ ParentPolitics,
+  ParentPolitics ~ ParentalEduc, 
+  ReligiousBeliefs ~ ParentReligion,
+  ParentReligion ~ ParentPolitics,
+  ParentPolitics ~ Politics,
+  Vaccine ~ Politics,
+  Politics ~ Misinformation,
+  Vaccine ~ Childhood,
+  HealthHistory ~ Childhood,
+  TrustAuthority ~ Childhood,
+  Childhood ~ ParentalReligion,
+  Childhood ~ ParentalPolitics,
+  Childhood ~ SES
+  )
+
+ggdag(dag6e)
+```
+
+**Question 7.**	*Consider this research question: Does the inclusion of “free shipping” cause people to buy items from an online store more?*
+*a.	List six variables that should be included in a causal diagram. *
+*b.	Is it feasible to collect data on all the variables that you listed in part a? Can the variables be measured easily? *
+
+
+a) 1- shipping cost
+2- online store purchases
+3- discounts (are there any discounts or promotions at this online store?)
+4- store format (is there a brick and mortar store or is the retailer exclusively online)
+5- customer's previous purchases at this store
+6- store advertising 
+
+b) I believe it is feasible to collect data on all these variables and measure them easily, except maybe #6. A way to measure advertising could be "how many store-sponsored posts on social media advertising the store per month on average"
+
+**Question 8.** *Define causality. In a few sentences, why is causality interesting and important?*
+
+When we say "x causes y", what we mean is "changes in X are responsible for changes in Y." Causality as a concept is important and interesting because it allows researchers to go beyond the framework of correlations, which can have real-world applications that change societies. Knowing that smoking cigarettes CAUSED cardiovascular disease and lung cancer allowed the United States government to launch an aggressive anti-smoking campaign and adjust smoking regulations. 
+
+
+**Question 9.**	*Which of the following describes a representation of a data generating process (DGP) including variables in that DGP and the causal relationships between them? *
+*a.	Causality *
+*b.	Direct and indirect effect*
+*c.	Latent variable*
+*d.	Causal diagram*
+
+D: Causal diagram. DAGs actually ONLY contain these two components, and help us to clearly visualize the causal relationships between variables in the DGP. 
+
+
+**Chapter 7 Homework: Drawing Causal Diagrams**
+
+**Question 1.**	*You are making a simplified causal diagram to represent the data generating process of viewership for a TV show. Which of the following is true?*
+*a.	The diagram should include a variable for “number of celebrities in the cast”*
+*b.	The diagram should contain one variable for “show airs in the evening” and another for “show doesn’t air in the evening”*
+*c.	The diagram should not contain a variable for “show budget” because budgets are often secret and the researcher can’t measure them*
+*d.	The diagram should contain the variable “review score in the Jefferson Weekly,” which is the newspaper published by the students at Jefferson High School, with a readership of about 120 people.*
+
+
+Answer: a. The diagram should include a variable for number of celebrities in the cast. Thinking about the data generating process, it's probably true that some people watch TV shows because a celebrity they like is in the cast, or because they saw a celebrity they like promote the show. B is incorrect because "show airs in the evening" and "show does not air in the evening" are both just values for the same variable, which would be "air time". C is incorrect because show budgets are often publicly available, and even if they weren't, it can be really important to include unobserved variables in our diagrams. D is incorrect because we are looking at general viewership, not just the viewership at this particular high school, or among the readers of this obscure news paper. 
+
+
+**Question 2.**	*Draw a causal diagram for the research question “do long shift hours make doctors give lower-quality care?” that incorporates the following features (and only the following features):*
+*a.	Long shift hours affect both how tired doctors are, and how much experience they have, both of which affect the quality of care*
+*b.	How long shifts are is often decided by the hospital the doctor works at. There are plenty of other things about a given hospital that also affect the quality of care, like its funding level, how crowded it is, and so on*
+*c.	New policies that reduce shift times may be implemented at the same time (with the timing determined by some unobservable change in policy preferences) as other policies that also attempt to improve the quality of care*
+
+Please see the diagram below. To simplify the diagram as per the chapter, I represented the various factors associated with which hospital one is at in part b of the question with the catchall variable "Hospital". This eliminated the mediating variables and also the redundancy. 
+```{r}
+library(ggdag)
+dag2  <- dagify(
+  DoctorEnergy ~ ShiftHours,
+  DocExperience ~ ShiftHours,
+  ShiftHours ~ Hospital,
+  CareQuality ~  Hospital,
+  CareQuality ~ DoctorEnergy,
+  CareQuality ~ DocExperience,
+  CareQuality ~ NewPolicies,
+  ShiftHours ~ NewPolicies)
+
+ggdag(dag2)
+```
+
+
+**Question 3.**	*Consider this research question: Does the funding level of public schools affect student achievement for students in your country? *
+*a.	What is the treatment and what is the outcome of interest? *
+*b.	Write down a list of relevant variables. *
+*c.	Which of the variables in your list in part b are causes of both treatment and outcome? *
+*d.	Why might we want to pay extra attention to the variables listed in part c?*
+*e.	Draw a causal diagram of the variables listed in part b.*
+*f.	Simplify the diagram from part e.*
+
+
+a) The treatment is the funding level of public schools in a given country and the outcome of interest is student achievement in that country.
+
+b) Relevant variables include:
+- GDP
+- What the government is like (including where it falls on the political spectrum)
+- Proportion of children who attend school
+- Proportion of children who attend public vs private/charter schools
+- Costs associated with public school 
+- Children's rights in that country (like universal public school, labor laws, etc.)
+- Cultural attitudes toward education
+
+c) Three variables on the list could potentially be causes of both public school funding and student achievement. 
+
+1) GDP has obvious effects on funding and could potentially also influence other aspects of life that lead to student achievement, like if most children are living above the poverty line.
+
+2) Where the government falls on the political spectrum. Governments with more socialist policies probably have better funding for public schools, and also more social programs that could potentially influence student achievement.
+
+3) Cultural attitudes toward education. Perhaps a country with a culture that values education highly would prioritize public school funding and support student achievement in other ways. 
+
+d) We want to pay close attention to these variables because, in some cases, variables like these can completely explain the bivariate relationship, which would mean there would not be a direct effect between x and y. 
+
+e) Complicated DAG:
+
+```{r}
+dag3  <- dagify(
+  KidsInSchool ~ Government, 
+  KidsInSchool ~ KidsRights,
+  KidsRights ~ Government,
+  CulturalAttitude ~ Government,
+  GDP ~ Government,
+  PublicPrivate ~ CulturalAttitude,
+  PublicPrivate ~ Funding, 
+  PublicPrivate ~ Government,
+  Funding ~ GDP,
+  Funding ~ Government,
+  Funding ~ CulturalAttitude,
+  Cost ~ Funding,
+  Cost ~ PublicPrivate,
+  Achievement ~ Funding,
+  Achievement ~ Government,
+  Achievement ~ CulturalAttitude,
+  Achievement ~ GDP)
+
+ggdag(dag3)
+```
+
+f) Here is a version without unimportant, irrelevant, or redundant variables, and yet it still has a mediating variable:
+
+```{r}
+dag3f  <- dagify(
+  Achievement ~ Politics,
+  Achievement ~ Funding,
+  Funding ~ Politics)
+
+ggdag(dag3f)
+```
+
+
+If we are to take the advice of the chapter and remove the mediating variable, we would only see a direct effect between politics (as a catchall to represent things like GDP and aspects of the government like dominant political ideology and if kids are required to go to school). Here is that version:
+
+```{r}
+dag3f1  <- dagify(
+  Achievement ~ Politics)
+
+ggdag(dag3f1)
+```
+
+But this seems oversimplified. We have lost the original bivariate relationship in question. While funding is decided by governments, we don't learn much from a DAG like this. Let's try to get slightly more specific:
+
+```{r}
+dag3f2  <- dagify(
+  Funding ~ Politics,
+  Achievement ~ Funding,
+  Achievement ~ Politics, 
+  Policies ~ Politics,
+  Achievement ~ Policies,
+  Achievement ~ CulturalNorms)
+
+ggdag(dag3f2)
+```
+
+We still have two indirect paths here with mediating variables that don't connect to any other variables aside from the two they are mediating. This isn't perfect. Also, cultural norms don't exist independent of politics, but including that arrow would have made that another mediating variable at risk of being removed in the simplification process. This is a tough one!
+
+
+**Question 4.**	*Describe the kinds of situations that each of the following could be applied to in order to simplify a causal diagram. *
+*a.	Unimportance *
+*b.	Redundancy *
+*c.	Mediators *
+*d.	Irrelevance*
+
+a) If a variable isn't very important to the causal path (i.e. the arrows going into and coming out of the variable represent unimportant effects), the variable can be removed to simplify the DAG.
+
+b) If more than one variable have the same causal pathways (arrows to and from the same variables), they can usually be combined into a variable that represents all of them, simplifying the DAG.
+
+c) If an intervening variable's only purpose on the diagram is to represent a mediation between two other variables and it connects to no other variables, it can be left off. 
+
+d) If a variable is not relevant to the research question but relevant to the DGP, it can be left off the DAG. 
+
+**Question 5.**	*How can a causal diagram be modified so as to avoid cyclic relationships?*
+
+We can avoid cyclic relationships by adding a time dimension and creating a new variable for each iteration of the cycle. Another way is to, if applicable focus on the portion of the variable driven by randomness and include that variable to break the cycle.
+
+
+**Question 6.**	*Think of a research question in your field of interest. *
+*a.	What is the cause variable and what is the outcome variable? *
+*b.	Write down a list of between 5 and 10 relevant variables in the data generating process. *
+*c.	Draw a causal diagram incorporating all the variables from part b.*
+*d.	Stop working on this problem for fifteen minutes and do something else. Then come back, look at your causal diagram from part c again, and describe one bad assumption you think it made, or something it left out.*
+
+
+a) The question is "does the SES of close members of one's network affect one's perception of one's own SES?" The cause variable is network SES and the outcome of interest is perceived SES. (This was what our methods practicum group was initially planning on doing, but decided to do something more along the lines of the DAG Fatima presented in class).
+
+b) Variables relevant to the DGP could include:
+- Average SES of close members of one's network (we'll call this NetworkSES)
+- Perceived SES
+- Parental income 
+- Race
+- Gender 
+- Financial responsibility 
+- Environmental heterogeneity (is your environment diverse in terms of SES or is it homogeneous)
+- Knowledge about income inequality 
+
+c) 
+```{r}
+dag6  <- dagify(
+ PerceivedSES ~ NetworkSES,
+ PerceivedSES ~ ParentalIncome,
+ PerceivedSES ~ Race,
+ PerceivedSES ~ Gender,
+ PerceivedSES ~ FinancialResponsibility,
+ PerceivedSES ~ Heterogeneity,
+ PerceivedSES ~ Knowledge,
+ NetworkSES ~ Heterogeneity,
+ Knowledge ~ Heterogeneity,
+ FinancialResponsibility ~ ParentalIncome)
+
+ggdag(dag6)
+```
+
+Again, I am acknowledging the couple of mediating variables in here that could be left out in a simplified version. 
+
+d) I've made a few different assumptions here (that could be accurate but I am not sure what the lit says... we did change our project after all). However, I don't think any of these are bad assumptions. All of the relationships between variables seem plausible. One thing I left out was occupation, which is a classic indicator of SES. I guess I was in the mental set of thinking about college students!
+
+**Question 7.**	*Consider the diagram below. It depicts a cyclical relationship between student achievement and motivation. If students achieve more (i.e., score well on exams), then their motivation goes up, and if their motivation goes up, they achieve more. Change the diagram so that the relationship is not cyclic anymore.*
+
+We can make the relationship non-cycic by applying a time dimension:
+```{r}
+library(ggdag)
+dag7  <- dagify(
+  Achievement_t ~ Motivation_t,
+  Motivation_t1 ~ Achievement_t, 
+  Achievement_t2 ~ Motivation_t1,
+  Motivation_t2 ~ Achievement_t2,
+  Achievement_t3 ~ Motivation_t2)
+
+ggdag(dag7)
+```
+
