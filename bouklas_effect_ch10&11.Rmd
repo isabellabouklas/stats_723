@@ -1,0 +1,182 @@
+---
+title: "The Effect Chapter 10 and 11"
+author: "Izzy Bouklas"
+date: "2/09/2022"
+output: html_document
+---
+**Chapter 10: Treatment Effects**
+
+**Question 1.**	*Define in your own words (i.e., don’t just copy down what’s written in the glossary) each of the following terms:* 
+*a.	Conditional average treatment effect *
+*b.	Average treatment on the treated*
+*c.	Average treatment on the untreated  *
+
+a) The conditional average treatment effect is the average of the "individual" treatment effects for individuals in our distribution of treatment effects that fit a specific criterion (like gender, if you are looking for the average treatment effect conditional on being a particular gender). So it is the ATE *conditional* on some attribute.
+
+b) The average treatment of the treated (or ATT) is the average treatment effect on the participants in the treatment group (who *actually* received the treatment. Assuming there are no back doors between the treated and untreated, it can tell us what what would happen if the people in our treatment group had (in an alternate universe) not gotten the treatment. 
+
+c) The average treatment on the untreated (or ATUT) is the average treatment effect on the participants who did not receive the treatment. In contrast to the ATT, the ATUT tells us what what would happen if the people in our control group had (in an alternate universe) not received treatment.
+
+
+
+**Question 2.**	*Provide an example of a treatment effect that you would expect to be highly heterogeneous, and explain why you think it is likely to be heterogeneous*
+
+An example of a highly heterogeneous treatment effect could be the effect of a diet (such as the Keto diet) on weight loss. If we are specifically looking at the effect of the diet on weight loss, we would see the treatment effect vary greatly across the population. A person's ability and body's readiness to lose weight depends on many individual factors such as metabolism, genetics, stress levels, and others. There is likely no one diet that could universally cause weight loss (that isn't starvation), which is one reason the multi-billion dollar global market for weight loss products and services is only growing. 
+
+**Question 3.**	*Consider the data in the table below that shows the hypothetical treatment effect of cognitive behavioral therapy on depression for six participants. For the sake of this example, the six participants represent the population of interest.* 
+
+*a.	What is the overall average treatment effect for the population?*
+
+*b.	What is the average treatment effect for Women? * 
+
+*c.	If nearly all Non-binary people get treated, and about half of all Women get treated, and we control for the differences between Women and Non-binary people, what kind of treatment effect average will we get, and what can we say about the numerical estimate we’ll get? * 
+
+*d.	If we assume that, in the absence of treatment, everyone would have had the same outcome, and also only teenagers (19 or younger) ever receive treatment, and we compare treated people to control people, what kind of treatment effect average will we get, and what can we say about the numerical estimate we’ll get?* 
+
+a) The ATE for the population is 6
+
+```{r}
+(7+3+7+8+7+4)/6
+```
+
+b) The ATE conditional on being a woman is 4.67
+
+```{r}
+(3+7+4)/3
+```
+
+c) In this situation, we will get a variance-weighted average treatment effect. This is because each individual's treatment effect is being weighted based on how much treatment variation there is for their group after closing back doors. We can say that the numerical estimate acknowledges the differences in treatment variation such that women are weighted more heavily given their higher treatment variation that non-binary people. 
+
+d) In this situation, we would get an ATE because we are looking at the effect of the treatment in the population. However, since the treatment was only assigned to teenagers, we don't have a representative sample. We will have to say that the numerical estimate may not accurately represent the ATE in the population because the treatment and control groups differed on age (which acts as a back door) yet everyone was weighted equally.
+
+**Question 4.**	*Give an example where the average treatment effect on the treated would be more useful to consider than the overall average treatment effect, and explain why*
+
+The ATT would be more useful than the ATE when we are unable to randomly assign people to the treatment group. An example of this is trying to assess the effect of being adopted in infancy on psychological well-being in adulthood. It would be unethical to take children away from their parents and assign them to be adopted, so instead we look at the ATT. 
+
+**Question 5.**	*Which of the following describes the average treatment effect of assigning treatment, whether or not treatment is actually received? *
+*a.	Local average treatment effect *
+*b.	Average treatment on the treated *
+*c.	Intent-to-treat *
+*d.	Variance-weighted average treatment effect*
+
+Answer: C) intent-to treat. According to the text, the intent to treat is the average treatment effet of ASSIGNING treatment. In this situation, it's possible that some of the people who are assigned treatment do not receive the treatment, and it is also possible that some people who were assigned to the control group get the treatment anyway. It does not matter because we are looking at the the ATE of assigning treatment, not the treatment itself. 
+
+**Question 6.**	*On weighted treatment effects: *
+*a.	Describe what a variance-weighted treatment effect is*
+*b.	Describe what a distribution-weighted treatment effect is *
+*c.	Under what conditions/research designs would we get each of these?*
+
+a) A variance weighted treatment effect weights groups that see more variation in treatment more heavily than theose with low variation in treatment because we can see the members of high treatment variation groups with and without treament more than the groups with low treatment variation.
+
+b) A distribution-weighted treatment effect weights individuals with common values of the variables the researcher is matching on more heavily. 
+c) We get variance-weighted treatment effects when some portion of our population has more variation in treatment than others. We can weight the groups in our sample that see more variation in treatment because we can see the members of these groups with and without treatment more than the groups with low variation in treatment.
+
+We get distribution-weighted treatment effects when we have a sample with similar values of variables on back door paths between treated and untreated groups.
+
+
+**Question 7.**	*Suppose you are conducting an experiment to see whether pricing cookies at $1.99 versus $2 affects the decision to purchase the cookies. The population of interest is all adults in the United States. You recruit people from your university to participate and randomize them to either see cookies priced as $1.99 or $2, then write down whether they purchased cookies. What kind of average treatment effect can you identify from this experiment?*
+
+Here we would be able to identify a conditional average treatment effect. More specifically, we would be able to identify the ATE conditional on being a member of this particular university. 
+
+**Question 8.**	*For each of the following identification strategies, what kind of treatment effect(s) is most likely to be identified? *
+*a.	A randomized experiment using a representative sample *
+*b.	True randomization within only a certain demographic group*
+*c.	Closing back door paths connected to variation in treatment *
+*d.	Isolating the part of the variation in treatment variable that is driven by an exogenous variable *
+*e.	The control group is comparable to the treatment group, but treatment effects may be different across these groups*
+
+a) ATE 
+
+b) Conditional ATE
+
+c) Variance-weighted treatment effect
+
+d) Local average treatment effect. Here we would be able to weight each person's treatment effect by the proportion of their treatment effect they received (which just represents whether or not they received the treatment at all, usually).
+
+e) Heterogeneous treatment effect
+
+
+**Chapter 11: Causality with Less Modeling**
+
+**Question 1.**	*Suppose that you are analyzing the effect of universities and colleges opening during a pandemic on increase in the number of positive cases. Name one strategy that you can use to avoid having to collect data on all types of campus characteristic variables that are constant over time that you may have to control for in your analysis.*
+
+We could focus on isolating a few front doors we know are there. For example, if we know that the political affiliation of the college/university (and potentially other prior variables) causes the school openings, then we can ignore the backdoor "stuff" that causes both the treatment and the outcome. 
+
+**Question 2.**	*Intuitively, why would a method that isolates front doors allow you to ignore back doors related to unmeasured variables?*
+
+Isolating front door paths allows us to ignore back doors related to unmeasured variables because we are isolating the effect of the variables that only cause the treatment. Since they do not also cause the outcome, we don't need to worry about them acting as confounding variables. We can estimate the effect of the treatment on the outcome by looking to the variables that cause the treatment. 
+
+**Question 3.**	*On robustness tests: *
+*a.	What are robustness tests? *
+*b.	What is the purpose of conducting a robustness test? *
+*c.	What are placebo tests?*
+
+a) A robustness test involves detailing an assumption we are making (usually about the absence of a relationship between two variables) and testing it. If we find that the relationship is there, then we know our assumption was incorrect. 
+
+b) Robustness tests either help us check whether we can disprove an assumption or help us to do our analysis in way that doesn't rely on that assumption to see if we get a different result from the result we got when our analysis did rely on that assumption.
+
+c) A placebo test is a type of robustness test that involves pretending that the treatment is being assigned somewhere that it isn't. Then you check whether you estimate an effect. If you observe an effect of the pretend-treatment, then you know you have made an incorrect assumption somewhere. 
+
+**Question 4.**	*Suppose you want to study the effect of attending tutoring sessions on grade point averages (GPA). List at least five variables that impact both attendance of tutoring sessions and students’ GPA. Is it feasible to measure and control for all of the variables?*
+
+Some variables that impact both attendance of tutoring sessions and students' GPA include:
+- SES
+- commute time to school (assuming tutoring happens at school)
+- if students have a part-time job
+- familial responsibilities outside of academics
+- drug use
+- having a physical disability
+- being neurodivergent (like having ADHD)
+
+I would say these are all easily measurable, so we should have no problem controlling for them. 
+
+**Question 5.**	*Describe partial identification in your own words.*
+
+Partial identification involves making assumptions about the effect of relationships that we can't measure/control for on the relationship between x and y. If we know assume the direction, we are able to partially identify an effect by comparing our estimated effect to the range of possible effects of the remaining assumptions. In comparing these, we can calculate a range for our estimated effect. 
+
+**Question 6.**	*Pick any causal diagram from the book other than Figure 11.2.*
+*a.	Reproduce that diagram here. *
+*b.	Select two variables on the diagram without a direct link between them (i.e. no single arrow straight from one of them to the other).*
+*c.	What variables would you need to control for that will eliminate any relationship between the two variables (you might not need any).*
+*d.	If you looked at the relationship between your two variables from part b, while controlling for the variables from part c, and you got a nonzero result, what would you conclude?*
+
+
+a) The causal diagram I chose is from #2 on the chapter 7 homework, which reads "draw a causal diagram for the research question 'do long shift hours make doctors give lower-quality care?'” The reproduction below is based on the DAG Nico shared with us on Slack after class.
+```{r}
+#load packages
+library("dagitty")
+library("ggdag")
+library("ggplot2")
+```
+
+```{r}
+dag6  <- dagify(
+  QualityofCare ~ OtherPolicies + Hospital + TiredDoctors + Experience,
+  OtherPolicies ~ U1,
+  ShiftLength ~ U1 + Hospital,
+  TiredDoctors~ ShiftLength,
+  Experience ~ ShiftLength
+  )
+
+ggdag(dag6)
+```
+
+b) The two variables I'm selecting are shift length and quality of care.
+
+c) Controlling for hospital will not eliminate the relationship between shift length and quality of care because the shift length is only partially determined by the hospital (as evidenced by the U1 variable).
+
+d) If I got a non-zero result after controlling for hospital, I would have to conclude that there are other factors causing shift length, like those bundled up in the U1 variable. 
+
+
+**Question 7.**	*What does it mean to say that the effect of financial deregulation on the rate at which firms go bankrupt is “bounded from above” at 2 percentage points?*
+*a.	The effect is 2 percentage points, and it’s a positive effect*
+*b.	The effect is 2 percentage points, and it’s a negative effect*
+*c.	The effect is at least as large as 2 percentage points*
+*d.	The effect is no larger than 2 percentage points*
+*e.	If we’re willing to make an additional, stronger set of assumptions, the effect would be larger than 2 percentage points, but without those assumptions it’s bounded to be lower.*
+
+
+Answer: D) The effect is no larger than 2 percentage points. The effect is no higher than 2% because there is another variable that effects both x and y, thus partially explaining the relationship between x and y. We know that if we observe an effect of 2 percentage points without controlling for the third variable, we have overestimated the effect. So the effect is no more than 2% and likely below 2%. 
+
+
+
