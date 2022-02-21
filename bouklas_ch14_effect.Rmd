@@ -1,0 +1,383 @@
+---
+title: 'The Effect Ch 14: Matching'
+author: "Izzy Bouklas"
+date: "2/22/2022"
+output: html_document
+---
+
+### Question 1 (Written Homework)
+##### You want to know whether practicing cursive improves your penmanship (on a 1-10 scale). You find that, among people who don’t practice cursive, average penmanship is 5, 10 people are left-handed, 2 are ambidextrous, and 88 are right-handed. Among people who do practice cursive, 6 are left-handed with average penmanship 7, 4 are ambidextrous with average penmanship 4, and 90 are right-handed with average penmanship 6.
+
+##### a.You want to create a set of weights that will make the treated group match the control group on handedness. Follow the process in section 4.2, paying attention to why certain numbers are going in certain positions. What weights will be given to the left, ambidextrous, and right-handed people in the control group?
+
+Everyone in the control group gets a weight of 1.
+
+##### b.	What weights will be given to the left, ambidextrous, and right-handed people in the treated group? 
+
+The left handed people in the treated group will be given a weight of 1.666667
+```{r}
+10/6
+```
+
+The ambidextrous people in the treated group will be given a weight of 
+.5
+```{r}
+2/4
+```
+
+The right-handed people in the treated group will be given a weight of
+.9777778
+```{r}
+88/90
+```
+
+##### c.	Use the weights from part b to calculate the proportion of left-handed people in the treated group, as well as the proportion of ambidextrous people and the proportion of right-handed people. If you don’t get 10%, 2%, and 88% (or very close with some rounding error), your weights are wrong, try again.
+
+Let's multiply the number of people in each group by the group's corresponding weights:
+
+The proportion of left-handed people in the treated group is 10%. I am dividing by 100 to show that there is an N of 100, and then multiplying by 100 to convert the decimal to a percentage. 
+```{r}
+((1.666667*6)/100)*100
+```
+
+The proportion of ambidextrous people in the treated group is 2%.
+```{r}
+((.5*4)/100)*100
+```
+
+The proportion of right-handed people in the treated group is 88%.
+```{r}
+((.9777778*90)/100)*100
+```
+
+##### d.	What is the weighted average penmanship score in the treated group?
+
+The weighted average penmanship score in the treated group is 6.212.
+
+```{r}
+weights <- c(1.666667,.5,.9777778)
+sum(weights*c(7,4,6))/sum(weights)
+```
+
+##### e.	What is the effect of practicing cursive that we would estimate using this data?
+
+We can estimate an effect of 1.212. 
+```{r}
+6.212-5
+```
+
+### Question 2	
+##### For each of the following descriptions of matching on the variable X, determine whether this is describing one-to-one distance matching, k-nearest-neighbor distance matching, kernel matching, or propensity score matching (hint: it’s one of each).
+
+#####	a) The treated observation has X=5. For each control observation, X-5 is calculated, with the result run through a weighting function. The resulting weight is applied to that observation.
+
+This is an example of kernel matching. In this type of matching, we use a kernel function to produce weights. 
+
+#####	b) The treated observation has X=5. Among the control observations, the nearest values are X=4,X=5.2, and X=5.9. The observations with X=5.2 and X=5.9 are chosen as a control, since they’re the two closest.
+
+This is an example of k-nearest-neighbor distance matching. In this type of matching, you keep picking the best control matches until you get to k matches, which in this case seems to be 2. 
+
+#####	c) The treated observation has X=5. You estimate a model that suggests that observations with X=5 have a .6 chance of being treated. You similarly calculate the chance of treatment for each control observation, and use those calculated probabilities to create a weight for each observation.
+
+This is an example of propensity score matching. In this type of matching, observations are considered similar of they were equally likely to receive the treatment. 
+
+#####	d) The treated observation has X=5. Among the control observations, the observation with X=5.1 is closest to that, and so is selected as a control. 
+
+This is an example of one-to-one distance matching. In distance matching, observations are considered similar if they have similar values of the matching variable. In one-to-one distance matching, we pick the one best control match for each treated observation.
+
+
+### Question 3	
+##### For each of the following decisions to be made in the process of matching, determine which option produces more bias (in each case, the other option will produce more variance)
+
+##### a.	(A) selecting one control match for each treatment vs. (B) selecting multiple control matches for each treatment 
+This depends on how bad the matches will get if you select multiple control matches for each treatment. If we have lots control observations that can be really good matches, then we probably don't have to worry about producing more bias. But if the control group is too small and we are limited in the amount of good matches to choose from, then we are introducing lots of bias. _So overall, probably B produces more bias._
+
+##### b.	(A) using a relatively wide bandwidth vs. (B) using a narrower bandwidth
+This depends. The wider the bandwidth, the more potential matches, which would mean we could calculate our treated and control means with more precision. However, widening the bandwidth allows in more bad matches, which introduces bias to our estimation. _So overall, A will produce more bias._
+
+##### c.	(A) selecting matches with replacement vs. (B) selecting matches without replacement
+Overall, the chapter says that matching *with* replacement generally has lower bias. However, this also depends! Selecting matches without replacement can introduce more bias because selecting matches *with* replacement means that each treated observation gets to use its best matches. However, that could also mean that if the same matches get picked again and again, then each control observation has more influence on the mean. _So overall, B will produce more bias._ 
+
+##### d.	(A) selecting one control match for each treatment vs. (B) applying a weight that accepts many controls but decays with distance
+Again, this depends on the rate of the decay! In general though, fewer but better matches will produce estimates with less bias. _So overall, B will produce more bias._
+
+
+### Question 4	
+##### Why should exact matching (or coarsened exact matching) generally be reserved for very large samples or situations where a very small number of matching variables is appropriate?
+
+Exact matching only uses variables that are exact matches. This means the bandwidth is set to 0. In a very large sample, you are more likely to get the exact match you are looking for, whereas a smaller sample may leave you with no matches. In a situation where a very small number of matching variables is appropriate, you don't need to worry about getting a bunch of matching variables. Which is good, because exact matching will likely not produce a bunch of matching variables since it has such strict criteria for what counts as a match. 
+
+### Question 5	
+##### You are looking at the effect of participating in high school sports on high school grades. You compare students who did and did not participate in sports, using one-to-one matching with a Mahalanobis distance, with replacement and a caliper of .3, to match on high school athleticism, parental income, gender, race, and middle school grades. You find that sports participation reduces grades, but by only .1 grade points. As clearly and precisely as possible, outline the steps that were taken in performing this analysis.
+
+We want to boil all the matching variables down to a single distance measure. To do that, we will:
+
+Step 1)  Take each matching variable and divide its value by its standard deviation (if doing the simplified version. If not, then divide it by the whole covariance matrix from the squared values of the variables).
+
+Step 2) Calculate the the Mahalanobis distance by taking the sum of squares of all differences between A and B, then taking the square root.
+
+Step 3) Compare the Mahalanobis distances and choose the matched variable that have a Mahalanobis distance that is no more than .3 standard deviations away. Since we are matching *with* replacement, the same observations can be used as a match across the different variables.
+
+
+### Question 6	
+##### Which of the following is a downside of propensity score matching compared to other methods of matching?
+##### a.	It can’t be combined with exact matching in cases where one variable must be exactly matched
+##### b.	It focuses the matching adjustment on differences that close back doors, rather than all differences
+##### c.	It requires the selection of matches instead of the use of weights, which increases variance.
+##### d.	It requires that the model used to estimate the propensity score is properly specified.
+
+D) It requires that the model used to estimate the propensity score is properly specified.
+
+
+### Question 7	
+##### You are planning to evaluate the effect of a tax-rebate plan for small businesses. Some businesses were eligible based on their tax returns and others weren’t. You would like to match on industry and number of employees. A table showing the number of businesses for each combination of industry and number of employees for the treated and untreated groups are in the following table:
+
+##### a.	For what group of treated businesses would we say that the common-support assumption definitely fails?
+
+The common support assumption definitely fails for the 11-20 retail treated group. Here we are lacking comparable observations between the treatment and control groups.
+
+##### b.	There are no treated retail businesses with 11-20 employees. Is this a concern for the common support assumption if we are trying to estimate an average treatment on the treated?
+
+This is not necessarily a concern if we are trying to estimate an average treatment on the treated because there are other groups that received the treatement, so we don't need to worry about including the 11-20 retail group. However, this would be more of a concern if we were trying to estimate an ATUT. 
+
+##### c.	What concern might we have about there only being one untreated Service business with 11-20 employees?
+
+We would only have one observation for the untreated service group to match on the treated service group. This isn't a problem if it's a really good match, but if it isn't, we might not be able to make a very precise estimate.
+
+##### d.	If we resolved the common support problem for the group from problem (a) by dropping members of that group from the data, what problem would that create for our analysis?
+
+The only groups that would have comparable observations between the treatment and control groups would be the 6-10 employee group.
+
+### Question 8	
+
+##### You perform a matching analysis on a schooling reform to create a set of matching weights, matching on the per-capita income and expenditures of the school. You then produce the below weighted balance table comparing the weighted means for treatment and control.
+
+##### a.	This particular balance table reports F-statistics of differences in means, with statistical significance markers. Are there statistically significant differences in either of the variables between the treated and untreated group at the 95% level?
+
+According to the table, there does not appear to be any statistically significant differences because the table lacks significance stars.
+
+##### b.	You don’t have enough information to actually evaluate this, but make a list of two things you’d think about when deciding whether it looks like there’s a balance problem based on the difference in means regardless of whether the difference is statistically significant. As an example, answer while thinking of the difference of 7749.7 – 7406.4 = 342.3 between treated and untreated in Income.
+
+When deciding about whether it looks like there's a balance problem, we could think about:
+
+1) Using a love plot or a balance plot
+2) Comparing the standardized difference-in-means
+
+##### c.	Imagine you did find lots of significant differences here after constructing matching weights using propensity score matching, even though these variables were included as matching variables. What would your next step be?
+
+The next step would be to do an iterative matching and balance check to assess the balance between the distributions of the variables among the two groups.
+
+
+### Question 9	
+##### Explain why selecting untreated observations to match the treated observations produces an average treatment effect on the treated (ATT), while selecting treated observations to match the untreated observations produces an average treatment effect on the untreated (ATUT).
+
+Selecting untreated observations to match the treated observations produces and ATT because it is as if we are estimating the counter factual. We are trying to figure out what effect we would observe in an alternate universe where the very same people who actually received the treatment in our study, did not receive the treatment. Selecting treated observations to match the untreated observations produces an ATUT because it is also trying to estimate its own counter factual by trying to find out what effect we would observe in an alternate universe in which the very same people who were in our control group DID receive the treatment.
+
+
+### Question 1 (Coding Homework)
+##### Load the nsw_mixtape data that can be found in the causaldata package associated with the book, or download it fromLoad the dengue.csv file provided to you, or from this site. Documentation on the variables is available through the package, or here. Then, drop the data_id variable from the data.
+
+```{r}
+#load packages
+library(causaldata)
+library(tidyverse)
+
+#save data set as nsw
+nsw <- as.data.frame(nsw_mixtape) |> select(-data_id)
+
+#check to make sure we successfully dropped the data_id variable
+glimpse(nsw)
+```
+
+
+### Question 2
+##### Let’s see where we’re at before we do any matching at all. nsw_mixtape is from an experiment (read that documentation!) so that should already put us in a pretty good place.
+
+##### First, create a variable called weight in your data equal to 1 for all observations (weights that are all 1 will have no effect, but this will give us a clue as to how we could incorporate matching weights easily).
+
+```{r}
+#load Steve's packages
+library(MatchIt)
+library(WeightIt)
+library(cobalt)
+library(tidyverse)
+library(broom)
+library(haven)
+theme_set(theme_minimal())
+
+# set seed
+set.seed(16708)
+```
+
+
+```{r}
+#create a "weight" variable that is 1 for all observations
+nsw <- nsw |> 
+  mutate(weight = 1)
+
+#check that it's there
+glimpse(nsw)
+```
+
+
+##### Second, write code that uses a set of given weights to estimate the effect of treat on re78, using weight as weights, and prints out a summary of the regression results. The easiest way to do this is probably weighted regression; see The Effect Section 13.4.1, but without any controls or predictors other than treat. Keep in mind the standard errors on the estimate won’t be quite right, since they won’t account for the uncertainty in creating the weights.
+
+```{r}
+r1<- lm(re78 ~ treat,
+        data = nsw,
+        weights = weight)
+tidy(r1, conf.int = TRUE)
+```
+
+##### Third, write code that creates and prints out a weighted balance table for all variables across values of treat, using weight as weighted. See The Effect Section 14.6.3. Don’t worry about getting a table with tests of significant differences for now; just the means.
+
+```{r}
+nsw |> 
+  group_by(treat) |> 
+  summarize(across(age:re75, ~ weighted.mean(.x, weight)))
+```
+
+##### 2b. Is there anything potentially concerning about the balance table, given that this is a randomized experiment where treat was randomly assigned?
+
+While none of the variables are perfectly balanced between the two groups, there are about twice as many Hispanic people in the treatment group than the control group.
+
+
+### Question 3
+##### Using all of the variables in the data except treat and re78 as matching variables, perform 3-nearest-neighbor Mahalanobis distance matching with replacement and no caliper (The Effect 14.4.1) and calculate the post-matching average treatment on the treated effect of treat on re78.
+
+```{r}
+#do the matching 
+match1 <- matchit(treat ~ age
+                  + educ + black + hisp + marr + nodegree + re74 + re75,
+                  data = nsw,
+                  method = "nearest",
+                  distance = "mahalanobis",
+                  estimand = "ATT",
+                  ratio = 3,
+                  replace = TRUE)
+
+#get matched data for calculating the weighted difference
+md1 <- match.data(match1)
+
+#calculate the post-matching ATT
+m1att <- lm(re78 ~ treat,
+            data = md1,
+            weight = weights)
+
+tidy(m1att, conf.int = TRUE)
+```
+
+
+### Question 4
+##### Create a post-matching balance table showing balance for all the matching variables (you’ll probably want to use the balance function designed to follow the matching function you used, from the same package). Write a sentence commenting on whether the balance looks good. You may have to read the documentation for the function you use to figure out what the results mean.
+
+```{r}
+#create post-matching balance table
+md1 |> 
+  group_by(treat) |> 
+  summarize(across(age:re75, ~ weighted.mean(.x, weights)))
+
+#compare with pre-matching balance table
+nsw |> 
+  group_by(treat) |> 
+  summarize(across(age:re75, ~ mean(.x)))
+```
+Comparing the two balance tables, the Hispanic variable looks much more balanced in the post-matching table compared with the pre-matching. 
+
+
+### Question 5
+##### Switching over to propensity score matching, use the same matching variables as in Question 3 to estimate the propensity to be treated (with a logit regression), and then add the treatment propensity to the data set as a new variable called propensity. Trim the propensity score, setting to missing any values from 0 to .05 or from .95 to 1 (this is a different method than done in the chapter).
+
+
+```{r}
+#do the matching 
+match5 <- matchit(treat ~ age + educ + black + hisp + marr + nodegree + 
+                    re74 + re75 + I(re74^2) + I(re75^2) + I(age^2) + I(educ^2),
+                    data = nsw,
+                    method = "nearest",
+                    distance = "glm",
+                    estimand = "ATT",
+                    replace = TRUE)  
+
+#get matched data 
+md5 <- match.data(match5)
+
+# add the treatment propensity to the data set as a new var called propensity 
+md5 <- rename(md5, propensity = distance)
+
+# trim the propensity score, setting to missing any values from 0 to .05 or from .95 to 1
+md5_trim <- md5|> mutate(tps=ifelse(propensity<=.05 | propensity>=.95, NA_real_, propensity))
+```
+
+### Question 6
+##### Create a new variable in the data called ipw with the inverse probability weight, and then estimate the treatment effect using those weights in a linear regression (keeping in mind the standard errors won’t be quite right).
+
+```{r}
+# create a new var with the inverse prob weight
+md5_ipw <- md5_trim |> 
+  mutate(ipw = case_when(
+    treat == 1 ~ 1/propensity,
+    treat == 0 ~ 1/(1-propensity)))
+
+# estimate the treatment effect 
+md5_te <- lm(re78 ~ treat,
+             data = md5_ipw,
+             weights = ipw)
+
+tidy(md5_te, conf.int = TRUE)
+```
+
+### Question 7
+##### Make a common support graph, overlaying the density of the propensity variable for treated observations on top of the density of the propensity variable for untreated observations. You may want to refer to this guide if you are not familiar with your language’s graphing capabilities. Write a line commenting on how the common support looks.
+
+```{r}
+# cobalt balance check- balance plot
+bal.plot(match5, "distance", which = "both", mirror = TRUE)
+```
+
+It looks like there were comparable control observations to match with. Since there were appropriate control observations, our analysis did not lack common support. 
+
+
+### Question 8
+##### Use the prepackaged command for inverse probability weighting used in the chapter for your language to estimate the treatment effect. Don’t apply a trim (as previously established, for this particular problem it doesn’t do much).
+
+```{r}
+#load packages
+library(boot)
+library(tidyverse)
+
+ip8 <- nsw
+
+# Function to do IPW estimation with regression adjustment
+ipwreg <- function(ip8, index = 1:nrow(ip8)) {
+    # Apply bootstrap index
+    ip8 <- ip8 |>  slice(index)
+    
+    # estimate and predict propensity score
+    m <- glm(treat ~ age + educ + black + hisp + marr + nodegree +
+                    re74 + re75 + I(re74^2) + I(re75^2) + I(age^2) + I(educ^2),
+             data = ip8, family = binomial(link = 'logit'))
+   ip8 <- ip8 |> mutate(props = predict(m, type = 'response'))
+    
+    # Create IPW weights
+    ip8 <- ip8 |> 
+        mutate(ipw = case_when(
+        treat == 1 ~ 1/props,
+        treat == 0 ~ 1/(1-props)))
+    
+    # Estimate difference
+    w_means <- ip8 |> 
+      group_by(treat) |> 
+      summarize(m = weighted.mean(re78, w = ipw)) |> 
+      arrange(treat)
+    
+    return(w_means$m[2] - w_means$m[1])
+}
+
+# See estimate and standard error
+ipwest <- boot(ip8, ipwreg, R = 200)
+ipwest
+```
+
+
+
