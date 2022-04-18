@@ -1,0 +1,169 @@
+---
+title: 'Aging and Subjective Well-being: Does College Matter?'
+author: "Izzy Bouklas"
+date: "4/10/2022"
+output:
+  pdf_document:
+    toc: yes
+fontsize: 12pt
+mainfont: Times New Roman
+geometry: margin=2.5cm
+CSL: american-sociological-association.csl
+bibliography: test.json
+---
+
+```{r setup, include=FALSE}
+#set up settings
+knitr::opts_chunk$set(echo = F, message = F, warning = F, fig.align = "center")
+#packages can also go in the set up chunk
+library(tidyverse)
+library(gssr)
+library(readr)
+library(dplyr)
+library(broom)
+library(modelsummary)
+library(plm)
+library(lme4)
+library(MatchIt)
+library(WeightIt)
+library(cobalt)
+library(CBPS)
+library(flexmix)
+library(lattice)
+library(sjPlot)
+library(dagitty)
+library(ggdag)
+library(ggplot2)
+library(ggeffects)
+#change the theme so all the plots are the same
+theme_set(theme_classic())
+
+set.seed(16708)
+
+load(file = "sst.rda")
+
+options(tinytex.verbose = TRUE)
+```
+
+\newpage 
+
+# Introduction
+
+## Background
+
+Developmental psychologists, sociologists, and economists alike have long been concerned with fluctuation in subjective well-being across the lifespan. Previous research has shown a U-shaped curve in this fluctuation, such that the lowest levels of subjective well-being tend to occur in mid-life (@blanchflowerWellbeingUshapedLife2008; @frijtersMysteryUshapedRelationship2012). Researchers have assessed this phenomenon using a range of methods, including cohort analysis and panel designs. The emergent findings from this literature demonstrate that people tend to experience a ‘happiness trough’ during middle age, and a ‘happiness bump’ during the transition out of mid-life, meaning that older adulthood is a protective factor against poor emotional outcomes. Socioemotional selectivity theory (SST) offers an explanation for this post-mid-life happiness bump, positing that older adults are afforded “future-time perspective” that prompts them to prioritize social experiences that promote their emotional well-being (@carstensenTakingTimeSeriously1999).
+
+
+# Data and Methods
+
+## Estimand
+
+The present study aims to use data from the General Social Survey (GSS) to examine the relationship between subjective well-being and age, and per SST, assess whether this relationship varies across dimensions that potentially interfere with one’s ability to prioritize such experiences. The specific research goal is to assess whether attending college moderates the relationship between age and subjective well-being. Two regression models are used to estimate the average treatment effect (ATE) of aging on subjective well-being, controlling for college attendance. 
+
+## Hypothesis
+
+Consistent with SST, I hypothesize that attending college will make the positive association between age and subjective well-being stronger in later life. This hypothesis is based on the notion that older adults' prioritization of social experiences that promote emotional well-being is responsible for increased subjective well-being in older adulthood. In this analysis, not attending college serves as a factor that might limit one's ability to prioritize such experiences.
+
+## Direct Acyclic Graph 
+
+The direct acyclic graph (DAG) below illustrates the data relevant data generating process for this analysis. This analysis is primarily interested in assessing whether having a college degree *moderates the relationship* between age and subjective well-being. This interaction is represented by the arrow pointing from college degree to relationship between age and subjective well-being. Variables like race, gender, and parental educationpose backdoor threats that this analysis addresses through weighting.
+
+
+![](/Users/isabellabouklas/Desktop/Coursework/Stats/stats_723/723_final_dag_min.png)
+*Figure 1.* DAG including relevant variables
+
+
+## Design
+
+The present study used a sample from the GSS, a large-scale, nationally representative survey of Americans. 46,075 individual cases from GSS data spanning 1972-2018 were used to assess the relationship between aging and subjective well-being. Interaction effects for having attended college were also assessed (whether attending college moderates the relationship between aging and subjective well-being). Two models were constructed, each using covariate balance propensity score (CBPS) weighting to create ATE weights. 
+CBPS was used to control for variation caused by race, gender, year, and parental college attendance. Weights were generated to balance the treatment (college-attending) and control (college-abstaining) samples on these four variables, making the two groups comparable and effectively closing the backdoor paths through these four variables. The goodness of fit for the two models were compared using the Bayesian Information Criterion (BIC). 
+
+### Measures
+
+*Age*: Respondents between the ages of 25 and 78 were included in the sample. The age minimum was selected so that the sample only included respondents who were old enough to have received a college degree at the time of the study. The age maximum was chosen in order to control for selection effects, as individuals who live past the age of 78 might have increased subjective well-being due to surpassing the U.S. life expectancy. 
+
+*Subjective well-being*: The GSS ‘happy’ variable was used to operationalize subjective well-being. This ordinal, categorical variable allowed respondents to report being generally (1) very happy, (2) pretty happy, or (3) not too happy. While there are several other GSS variables assessing emotional well-being, the selected variable is the only one of this group to appear in the core survey, and was the closest approximation to the construct. 
+
+*College attendance*: College attendance was operationalized using data from the ‘degree’ GSS variable. 
+
+*Race*: The GSS ‘race’ variable was used to operationalize race. Response options were limited to (1) White, (2) Black, and (3) other. While it would have been ideal to match on ethnicity instead of race, there were so many response categories for the GSS ‘ethnic’ variable, which resulted in some categories having very few cases. Additionally, respondents were asked to pick only one ethnicity, which limited the ability to match/balance on this variable. 
+
+*Gender*: The GSS ‘sex’ variable was used to operationalize gender. While sex and gender are distinct constructs, this variable was the closest approximation of gender in the GSS. Response options were limited to (1) male and (2) female. 
+
+*Parental college attendance*: This construct was operationalized as a dummy variable created using data from the ‘maeduc’ and ‘paeduc’ GSS variables. Respondents with at least one parent who attended college were coded as 1 and participants with no parents who attended college were coded as 0. 
+
+
+### Model 1
+
+Model 1 uses linear regression to estimate the effect of age on happiness, controlling for both having attended college and year.
+
+Regression equation: 
+
+\begin{align*}y=\beta_{0}+\beta_{1}age+\beta_{2}age^{2}+\beta_{3}college+\beta_{4}year+\varepsilon\end{align*}
+
+### Model 2
+
+Model 2 uses linear regression to estimate the effect of age on happiness, controlling for both having attended college and year, and also includes interaction terms assessing the interaction effects of having attended college. 
+
+Regression equation: 
+
+\begin{align*}y =\beta_{0}+\beta_{1}age+\beta_{2}age^{2}+\beta_{3}college+\beta_{4}(college*age)+\beta_{5}(college*age^{2})+\beta_{6}year+\varepsilon\end{align*}
+
+# Results
+
+CBPS weighting was used to balance the treatment and control group on year, race, parental education, and gender in order to close the backdoor paths through these four variables. Figure 2 shows the adjusted covariate balance. Please note that year was coded as a dummy variable, as reflected in the plot. 
+
+```{r}
+love.plot(w, 
+          abs = TRUE,
+          binary = "std",
+          thresholds = .1)
+```
+
+*Figure 2* Love plot of covariate balance
+
+
+The model summaries below (table 1) indicate an overall extremely small, but negative, relationship between age and subjective well-being in both models. Both models also show that having a college degree also has a small, but negative effect on well-being overall, and there was no interaction effect for age and college degree. 
+
+```{r}
+#model summaries
+msummary(list(m1, m2), title = 'Model Comparison', statistic = 'std.error', stars = TRUE, coef_omit = "year1973|year1974|year1975|year1975|year1976|year1977|year1978|year1982|year1983|year1984|year1985|year1986|year1987|year1988|year1989|year1991|year1993|year1994|year1996|year1998|year2002|year2004|year2006|year2008|year2012|year2014|year2016", gof_omit = "Log.Lik.")
+
+
+msummary(list(m1, m2), title = 'Model Comparison', statistic = 'std.error', stars = TRUE, coef_omit = "Int|age|college", gof_omit = ".*")
+```
+
+
+*Table 1.* Model summaries and comparison
+
+Comparing BIC scores, model 1's score is lower by 'bicdiff' units, making it the preferred model. This means that adding the interaction terms for (1) age and college degree and (2) age^2 and college degree did not improve model's predictive power. 
+
+```{r}
+#Plot the models:
+ggpredict(m1, terms = c("year")) |> plot()
+
+ggpredict(m2, terms = c("year")) |> plot()
+
+ggpredict(m1, terms = c("year", "college")) |> plot()
+
+ggpredict(m2, terms = c("year", "college")) |> plot()
+
+ggpredict(m1, terms = c("age", "college")) |> plot()
+
+ggpredict(m2, terms = c("age", "college")) |> plot()
+
+ggpredict(m1, terms = c("age")) |> plot()
+
+ggpredict(m2, terms = c("age")) |> plot()
+```
+
+
+# Discussion
+
+## Concluding Findings
+
+In conclusion, the models do not indicate that college moderates the relationship between age and subjective well-being in this sample. This analysis was limited in variables that could serve as limiting factors for prioritizing experiences that promote emotional well-being. It is also limited by a rather crude measure of subjective well-being. A strength of this analysis is its use of CBPS weighting, which would help to strengthen a causal argument if there was a causal argument to be made. While this analysis was designed to 'test' SST, there are many other ways to do this. Future research might look to examine other factors that contribute to one's ability to prioritize experiences that promote emotional well-being in older adults. 
+
+\newpage 
+# References
+
